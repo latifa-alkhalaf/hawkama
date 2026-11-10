@@ -62,6 +62,11 @@
   if (h && parseId(h[1])) store.set(parseId(h[1]));
   const id = store.get();
   if (id) { keepInUrl(id); start(id); } else document.getElementById('setup').style.display = 'block';
+  // إن أُضيف الرابط بعد فتح الصفحة (بعض المتصفحات وتطبيقات المراسلة تفعل ذلك) يُلتقط ويُعاد التحميل
+  addEventListener('hashchange', () => {
+    const m = location.hash.match(/^#k=(.+)$/), v = m && parseId(m[1]);
+    if (v && v !== store.get()) { store.set(v); location.reload(); }
+  });
   function keepInUrl(v){ if (location.hash !== '#k=' + v) history.replaceState(null, '', location.pathname + '#k=' + v); }
 
   const off = document.getElementById('off');
